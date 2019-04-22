@@ -18,6 +18,7 @@ Masanari Kimura (mkimura@ridge-i.com)
 
 ---
 # 不完全ラベル学習
+* Weakly-Supervised Learningなどとも
 * 学習に用いられるデータのラベルが欠損しているという問題設定
 * 今回は特に，Kクラス分類の際に，T(<=K)クラスのデータにラベルがついていないケースを考える．
 	* e.g, 2値分類でPositiveクラスのデータにしかラベルが無い(PU) 
@@ -140,7 +141,53 @@ $p(y=+1|x_i) \leq p(y=+1|x_j) \Leftrightarrow r(x_i) \leq r(x_j)$
 * 明示的なクラスラベルの付与なしに分類器を学習
   * クラスラベルの代わりにサンプル同士の類似度を活用
 
+---
 
+## <span style="color: CornflowerBlue">Pairwise Similarity Learning</span>
+
+* クラスラベルではなくデータペアが似てるかどうかをラベリング
+* 以下のような利点がある
+  * クラス数が膨大な時に効率的にアノテーション可能
+  * タスクによって再アノテーションが必要ない
+
+<img src="./fig_pairwise_similarity.png" />
+
+---
+
+
+## <span style="color: CornflowerBlue">Notation of Meta Classification Learning</span>
+
+* 解きたいタスクは以下のグラフィカルモデルで表現できる
+
+<img src="./fig_graphical_mcl.png" />
+
+* 観測
+  * サンプル集合$X = \{X_1,...,X_n\}$
+  * 類似度集合$S=\{S_{ij}\}_{1\leq i,j\leq n}$
+* 隠れ変数
+  * クラスラベル集合$Y = \{Y_1,...,Y_n\}$
+  * モデルのパラメータ$\theta$
+
+---
+
+## <span style="color: CornflowerBlue">Meta Classification Learning</span>
+
+尤度は，
+
+$L(\theta;X,Y,S) = P(X,Y,S;\theta) = P(S|Y)P(Y|X;\theta)P(X)$
+
+* $Y$が一切得られていないので，$Y$について周辺化すると$\sum_Y P(S|Y)P(Y|X;\theta)$,
+* この式の$P(S|Y) = \prod_{i,j} P(S_{i,j}|Y_i,Y_j)$部分の計算負荷が高い
+
+---
+
+## <span style="color: CornflowerBlue">Approximation of the Pairwise Term</span>
+
+* 先述のペアワイズ項の計算負荷が高いので近似したい
+* 類似度集合に独立性を導入する：$S_{ij}\perp S\backslash\{S_{ij}\}|X_i, X_j$
+* 式変形から，最終的な目的関数は，
+
+$L_{meta} = - \sum_{i,j} s_{ij}\log{\hat{s}_{ij}} + (1 - s_{ij})\log(1 - \hat{s}_{ij})$
 
 ---
 # References
