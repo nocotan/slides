@@ -8,6 +8,8 @@ Masanari Kimura (mkimura@ridge-i.com)
 
 # 概要
 * ICLR2019に採択された不完全ラベル学習のまとめ
+* ラベルが不完全な状況での学習という研究領域を知ってもらう
+
 
 ---
 
@@ -18,8 +20,8 @@ Masanari Kimura (mkimura@ridge-i.com)
 
 ---
 # 不完全ラベル学習
-* Weakly-Supervised Learningなどとも
 * 学習に用いられるデータのラベルが欠損しているという問題設定
+  * Weakly-Supervised Learningなどとも
 * 今回は特に，Kクラス分類の際に，T(<=K)クラスのデータにラベルがついていないケースを考える．
 	* e.g, 2値分類でPositiveクラスのデータにしかラベルが無い(PU) 
 
