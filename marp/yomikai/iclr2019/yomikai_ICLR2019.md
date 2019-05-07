@@ -89,7 +89,7 @@ $x_i, x_j\in{\chi}$について，
 
 $p(y=+1|x_i)\leq p(y=+1|x_j)\Leftrightarrow p(o=+1|x_i)\leq p(o=+1|x_j)$
 
-* ラベルはpositive data($y=+1$)のみに付与されることから仮定
+* ラベルはpositive data($y=+1$)のみに付与されることから
 
 <img src="./fig_order_assumption.png" />
 
@@ -134,6 +134,16 @@ $p(y=+1|x_i) \leq p(y=+1|x_j) \Leftrightarrow r(x_i) \leq r(x_j)$
 * 出どころの違う２つのラベル無しデータ集合のみから分類器を学習
 
 ---
+
+## <span style="color: CornflowerBlue">UU Learning</span>
+* 収集方法の違う２つのラベルなしデータセットから学習
+* クラスラベルの代わりに<span style="color: CornflowerBlue">”データの出どころ”</span>にラベリングするイメージ
+  * クラスタリングではなく弱教師あり学習の区分
+
+
+<img src="./fig_uu_learning.png">
+
+---
 # Multi-class classification without multi-class labels
 * Yen-Chang Hsu, Zhaoyang Lv, Joel Schlosser, Phillip Odom, Zsolt Kira
 
@@ -147,10 +157,11 @@ $p(y=+1|x_i) \leq p(y=+1|x_j) \Leftrightarrow r(x_i) \leq r(x_j)$
 
 ## <span style="color: CornflowerBlue">Pairwise Similarity Learning</span>
 
-* クラスラベルではなくデータペアが似てるかどうかをラベリング
+* クラスラベルではなくペアが似てるかどうかをラベリング
 * 以下のような利点がある
   * クラス数が膨大な時に効率的にアノテーション可能
   * タスクによって再アノテーションが必要ない
+  * クラス数可変のタスクに適用できる
 
 <img src="./fig_pairwise_similarity.png" />
 
@@ -179,17 +190,62 @@ $p(y=+1|x_i) \leq p(y=+1|x_j) \Leftrightarrow r(x_i) \leq r(x_j)$
 $L(\theta;X,Y,S) = P(X,Y,S;\theta) = P(S|Y)P(Y|X;\theta)P(X)$
 
 * $Y$が一切得られていないので，$Y$について周辺化すると$\sum_Y P(S|Y)P(Y|X;\theta)$,
-* この式の$P(S|Y) = \prod_{i,j} P(S_{i,j}|Y_i,Y_j)$部分の計算負荷が高い
+* この式の$P(S|Y) = \prod_{i,j} P(S_{i,j}|Y_i,Y_j)$部分の計算負荷が高いので集合の独立性を仮定して近似．
 
 ---
 
-## <span style="color: CornflowerBlue">Approximation of the Pairwise Term</span>
+## <span style="color: CornflowerBlue">A Loss Function</span>
 
-* 先述のペアワイズ項の計算負荷が高いので近似したい
-* 類似度集合に独立性を導入する：$S_{ij}\perp S\backslash\{S_{ij}\}|X_i, X_j$
-* 式変形から，最終的な目的関数は，
+最終的に得たい目的関数は，
 
 $L_{meta} = - \sum_{i,j} s_{ij}\log{\hat{s}_{ij}} + (1 - s_{ij})\log(1 - \hat{s}_{ij})$
+
+
+* ここで$\hat{s}_{ij}$は$x_i$と$x_j$の間の類似度の予測値
+* 類似度を近づけるように学習　→　<span style="color: red">ラベル不要</span>
+
+---
+
+## <span style="color: CornflowerBlue">Pairwise Similarity</span>
+
+* 類似度にはベクトルの内積を使える．例えば，
+
+$\vec{v_1} = (0.0, 0.2, 0.8, 0.0)$
+$\vec{v_2} = (0.2, 0.2, 0.3, 0.3)$
+$\vec{v_3} = (0.1, 0.3, 0.6, 0.0)$
+
+のとき，
+
+$s_{12} = 0.28$
+$s_{13} = 0.56$
+$s_{23} = 0.26$
+
+となり，$\vec{v_1}$と$\vec{v_3}$が似ているとみなせる．
+
+---
+
+## <span style="color: CornflowerBlue">Pairwise Similarity for Multi-Label Classifier</span>
+
+* $\hat{s}_{ij}$は$x_i$と$x_j$の類似度．
+  * $x_i$と$x_j$に対応するベクトルを決めたい．
+  * <span style="color: red">多クラス分類器$f(x_*)$を用意すると都合が良さそう</span>
+    
+* （再活）最終的な目的関数
+
+$L_{meta} = - \sum_{i,j} s_{ij}\log{\hat{s}_{ij}} + (1 - s_{ij})\log(1 - \hat{s}_{ij})$
+
+$\hat{s}_{ij} = f(x_i ; \theta)^T f(x_j; \theta)$
+
+<span style="color: red">明示的なラベル$Y$を一切使わずに，目的関数に多クラス分類器$f(\cdot; \theta)$を導入できた</span>
+
+---
+
+# Conclusion
+* ラベル不完全な問題設定のICLR2019採択論文を紹介
+* 本来解けない問題設定でも仮定を導入することで可解になる
+* <span style="color: red">見えているタスクだけではなく見えない仮定を意識することが重要</span>
+  *  暗黙のうちに好ましくない仮定を置いていないか？
+  *  ある仮定を置くことで可解なタスクに落ちないか？
 
 ---
 # References
