@@ -136,12 +136,100 @@ $p(y=+1|x_i) \leq p(y=+1|x_j) \Leftrightarrow r(x_i) \leq r(x_j)$
 ---
 
 ## <span style="color: CornflowerBlue">UU Learning</span>
-* 収集方法の違う２つのラベルなしデータセットから学習
+* データの分布が違う２つのラベルなしデータセットから学習
 * クラスラベルの代わりに<span style="color: CornflowerBlue">”データの出どころ”</span>にラベリングするイメージ
   * クラスタリングではなく弱教師あり学習の区分
 
-
 <img src="./fig_uu_learning.png">
+
+---
+
+## <span style="color: CornflowerBlue">Contribution</span>
+
+* 任意のBinary Classifierが単一のラベル無しデータ集合のみから学習を行うことが<span style="color: CornflowerBlue">不可能</span>であることを証明
+* 分布の違う2つのラベル無しデータ集合からであれば学習を行うことが<span style="color: red">可能</span>になることを証明
+
+---
+
+## <span style="color: CornflowerBlue">Intuitive Understanding</span>
+
+### 直感的理解
+* $X$と$X'$の分布が違うことがわかっている
+* →分布の違い≒データの含まれる割合の違い
+* →$X$にとっての多数派（赤）と$X'$にとっての少数派（青）が同じクラスになるはず
+
+<img src="./fig_uu_intuitive.png" />
+
+
+---
+
+## <span style="color: CornflowerBlue">A Brief Review of Empirical Risk Minimization</span>
+
+* ERMは以下リスク$R(g)$を最小化するようにモデルを選択する．
+
+$\hat{R}(g) = \frac{\pi_p}{n}\sum^n_{i=1} l(g(x^+_i)) + \frac{1-\pi_p}{n'}\sum^{n'}_{j=1} l(-g(x^-_j))$
+
+* ここで$x^+_i$はpositiveデータ，$x^-_j$はnegtiveデータ
+
+### 本論文の目的：ERMの$x$からpositive/negativeの区別を取り去る
+
+---
+
+## <span style="color: CornflowerBlue">Risk Rewrite for UU-Learning</span>
+
+異なるデータの分布$p_{tr}, p'_{tr}$に対して，$R(g)$を以下のように書き換える
+
+$R(g) = \mathbb{E}_{p_{tr}}[\bar{l}_+(g(X))] + \mathbb{E}_{p'_{tr}}[\bar{l}_-(-g(X))]$
+
+ここで，
+* $\bar{l}_+(z) = al(z) + bl(-z)$
+* $\bar{l}_-(z) = cl(z) + dl(-z)$
+
+$\bar{l}(\cdot)$は何を意味しているか？
+* ノイジーなデータセットに対して，<span style="color: red">損失関数$l(\cdot)$を補正している</span>
+	* label correctionという分野
+	* 損失関数に対して適切な係数をかけることでノイジーなデータで学習できることを示している
+
+---
+
+## <span style="color: CornflowerBlue">Label Correction</span>
+
+2値分類問題において，入力$z$のラベルがノイジーであるとする，e.g.,
+* ラベル<span style="color: red">0</span>の入力$z$は1/4の確率で本当はクラス<span style="color: red">1</span>
+* ラベル<span style="color: red">1</span>の入力$z$は1/5の確率で本当はクラス<span style="color: red">0</span>
+
+ノイズ発生確率に応じて損失関数に係数をかけると，
+
+$\bar{l}(z) = 0.25 \times l(z) + 0.2 \times l(-z)$
+
+---
+
+本論文では，$\bar{l}'_+$および$\bar{l}_-$の係数を，
+
+$a = \frac{(1-\theta)\pi_p}{\theta - \theta'}$, $b = - \frac{\theta(1-\pi_p)}{\theta - \theta'}$, $c = \frac{\theta(1-\pi_p)}{\theta - \theta'}$，$d = - \frac{(1 - \theta)\pi_p}{\theta - \theta'}$
+
+とする．これを代入して式変形していくと，
+
+$\hat{R}_{uu} = \frac{1}{n}\sum^n_{i=1} \alpha l(g(x_i)) + \frac{1}{n}\sum^{n'}_{j=1} \alpha' l(-g(x'_j)) - T$
+
+* $\alpha = (\theta' + \pi_p - 2\theta'\pi_p)/(\theta - \theta')$
+* $T = \frac{\theta'(1-\pi_p) + (1-\theta)\pi_p}{\theta - \theta'}$
+
+$\theta$および$\theta'$は$X$および$X'$に正例が含まれる確率，$\pi_p$はデータ全体に正例が含まれる確率．← <span style="color: CornflowerBlue">事前知識を利用</span>
+
+---
+
+## <span style="color: CornflowerBlue">UU-Learning with two Unlabeld Data Sets</span>
+
+目的（再活）：ERMの$x$からpositive/negativeの区別を取り去る
+
+得られた$\hat{R}_{uu}(g)$は，
+
+$\hat{R}_{uu} = \frac{1}{n}\sum^n_{i=1} \alpha l(g(x_i)) + \frac{1}{n}\sum^{n'}_{j=1} \alpha' l(-g(x'_j)) - T$
+
+
+<br><br>
+<span style="color: red">ERMの式から明示的なラベルを削除する代わりに，データの分布に関する事前知識を導入することでUU-Learningを達成</span>
 
 ---
 # Multi-class classification without multi-class labels
@@ -189,7 +277,9 @@ $p(y=+1|x_i) \leq p(y=+1|x_j) \Leftrightarrow r(x_i) \leq r(x_j)$
 
 $L(\theta;X,Y,S) = P(X,Y,S;\theta) = P(S|Y)P(Y|X;\theta)P(X)$
 
-* $Y$が一切得られていないので，$Y$について周辺化すると$\sum_Y P(S|Y)P(Y|X;\theta)$,
+### 本論文の目的：損失関数内からラベル集合$Y$を取り去る
+
+* $Y$について周辺化すると$\sum_Y P(S|Y)P(Y|X;\theta)$,
 * この式の$P(S|Y) = \prod_{i,j} P(S_{i,j}|Y_i,Y_j)$部分の計算負荷が高いので集合の独立性を仮定して近似．
 
 ---
