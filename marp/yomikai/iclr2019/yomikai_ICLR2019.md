@@ -6,6 +6,51 @@ Masanari Kimura (mkimura@ridge-i.com)
 
 ---
 
+# About
+
+<style>
+.column-left{
+  float: left;
+  width: 60%;
+  text-align: left;
+}
+.column-right{
+  float: right;
+  width: 40%;
+  text-align: left;
+}
+</style>
+
+
+<div class="column-left">
+  
+### <span style="color: CornflowerBlue">Education & Career</span>
+  
+* 筑波大学卒 (2018)
+* Ridge-iエンジニア (2018 ~ )
+* 産総研特専研究員 (2019 ~)
+
+</div>
+
+<div class="column-right">
+Twitterやってます
+
+<span style="color: CornflowerBlue">@machinery81</span>
+  
+<img src="./icon.jpg" style="width:40%">
+</div>
+
+
+### <span style="color: CornflowerBlue">Researches ater joining Ridge-i</span>
+
+* <sup>Interpretation of Feature Space using Multi-Channel Attentional Sub-Networks (CVPRW2019)</sup>
+* <sup>Progressive Data Increasing as the Neural Network Initializer (JSAI2019)</sup>
+* <sup>Anomaly Detection Using GANs for Visual Inspection in Noisy Training Data (ACCVW2018)</sup>
+* <sup>Analyzing Centralities of Embedded Nodes (ICDMW2018)</sup>
+
+
+---
+
 # 概要
 * ICLR2019に採択された不完全ラベル学習のまとめ
 * ラベルが不完全な状況での学習という研究領域を知ってもらう
@@ -49,6 +94,17 @@ Masanari Kimura (mkimura@ridge-i.com)
 
 * (Assumption) Positiveなラベル付きデータはPositiveなラベル無しデータと同様の分布に属する
   * $\{x_i\}^n_{i=1}\sim^{i.i.d.} p(x|y=+1)$
+
+---
+
+## <span style="color: CornflowerBlue">Is SCAR Always True?</span>
+
+<img src="./fig_hard_positive.jpg">
+
+---
+
+## <span style="color: CornflowerBlue">Is SCAR Always True?</span>
+
 * <span style="color: red">現実問題ではラベリングの際のデータの選択に”バイアス”が掛かる</span>
   * e.g. わかりやすいデータにはラベル付けがされやすい
 
@@ -64,6 +120,9 @@ Masanari Kimura (mkimura@ridge-i.com)
 ---
 
 ## <span style="color: CornflowerBlue">PU Learning with Selection Bias</span>
+
+### 本論文の目的：PU LearningのモデルからSCARの仮定を取り去る
+
 * positiveデータ集合$\{x_i\}^n_{i=1}$とunlabaledデータ集合$\{x'_i\}^{n'}_{i=1}$
   * $\{x_i\}^n_{i=1}\sim^{i.i.d} p(x|y=+1, o=+1),$
   * $\{x'_i\}^{n'}_{i=1}\sim^{i.i.d} p(x),$
@@ -76,11 +135,12 @@ Masanari Kimura (mkimura@ridge-i.com)
 * Elkan & Noto (2008)[4]によって，PU learningに一切の仮定無しに$p(y=+1|x)$を推定することは出来ないことが示されている
   * 一般的にはSCARを仮定
   * $p(x|y=+1, o=+1) = p(x|y=+1, o=0)$
+
+$p(y=+1|x) = \frac{p(x, y=+1)}{p(x)} = \frac{p(x|y=+1)\pi}{p(x)} = \frac{p(x|y=+1, o=+1)\pi}{p(x)}$
+
 * 3番目の等号にSCARを仮定
   * $p(x|y=+1, o=+1)$は実際のサンプルから推定できる
   * $\pi$は過去の事前知識を活用できる
-
-$p(y=+1|x) = \frac{p(x, y=+1)}{p(x)} = \frac{p(x|y=+1)\pi}{p(x)} = \frac{p(x|y=+1, o=+1)\pi}{p(x)}$
 
 ---
 
@@ -200,7 +260,17 @@ $\bar{l}(\cdot)$は何を意味しているか？
 
 ノイズ発生確率に応じて損失関数に係数をかけると，
 
-$\bar{l}(z) = 0.25 \times l(z) + 0.2 \times l(-z)$
+$\bar{l}(z) = 0.75 \times l(z) + 0.8 \times l(-z)$
+
+---
+
+## <span style="color: CornflowerBlue">Why Label Correction?</span>
+
+### ラベル無しデータ集合を<span style="color: red">ノイジーなデータ集合</span>に置き換えている．
+* データセット$X$はノイジーなPositiveデータセット
+* データセット$X'$はノイジーなNegativeデータセット
+
+<img src="./fig_label_crr.png">
 
 ---
 
@@ -246,7 +316,6 @@ $\hat{R}_{uu} = \frac{1}{n}\sum^n_{i=1} \alpha l(g(x_i)) + \frac{1}{n}\sum^{n'}_
 ## <span style="color: CornflowerBlue">Pairwise Similarity Learning</span>
 
 * クラスラベルではなくペアが似てるかどうかをラベリング
-* 以下のような利点がある
   * クラス数が膨大な時に効率的にアノテーション可能
   * タスクによって再アノテーションが必要ない
   * クラス数可変のタスクに適用できる
@@ -278,9 +347,6 @@ $\hat{R}_{uu} = \frac{1}{n}\sum^n_{i=1} \alpha l(g(x_i)) + \frac{1}{n}\sum^{n'}_
 $L(\theta;X,Y,S) = P(X,Y,S;\theta) = P(S|Y)P(Y|X;\theta)P(X)$
 
 ### 本論文の目的：損失関数内からラベル集合$Y$を取り去る
-
-* $Y$について周辺化すると$\sum_Y P(S|Y)P(Y|X;\theta)$,
-* この式の$P(S|Y) = \prod_{i,j} P(S_{i,j}|Y_i,Y_j)$部分の計算負荷が高いので集合の独立性を仮定して近似．
 
 ---
 
@@ -319,6 +385,14 @@ $s_{23} = 0.26$
 * $\hat{s}_{ij}$は$x_i$と$x_j$の類似度．
   * $x_i$と$x_j$に対応するベクトルを決めたい．
   * <span style="color: red">多クラス分類器$f(x_*)$を用意すると都合が良さそう</span>
+
+---
+
+* <span style="color: red">多クラス分類器$f(x_*)$を用意すると都合が良さそう</span>
+
+<img src="./fig_ss_overview.png">
+
+---
     
 * （再活）最終的な目的関数
 
