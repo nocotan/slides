@@ -56,7 +56,31 @@ Twitterやってます
 
 ---
 
-# 概要
+# Abstract
+* Adversarial Attacksに対するロバスト性が損失関数の曲率に依存することを示した
+* 損失関数の曲率に基づくロバスト性のBoundsを示した
+* DNNsのロバスト性を向上させる正則化手法を提案した
+
+---
+
+# Adversarial Attacks
+
+---
+
+# Why Study Adversarial Attacks ?
+
+---
+
+# Curvature of Loss Functions
+
+---
+
+# Adversarial Training leads to decrease in the curvature
+
+
+---
+
+# Curvature Reqularization (CURE) Method
 
 ---
 
