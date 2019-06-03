@@ -200,6 +200,23 @@ $\to L_r = \|\nabla\ell(x + hz) - \nabla\ell(x)\|^2$
 
 ---
 
+# Improving robustness through CURE
+
+* CUREによって損失関数の曲率を抑えることができている
+* 同時に，Attackに対するロバストネスの向上も確認
+
+<div>
+<div class="column-left" style="width: 45%">
+  <img src="./fig_cure_curvature.png" />
+</div>
+
+<div class="column-right" style="width: 45%">
+  <img src="./fig_cure_accuracy.png" />
+</div>
+</div>
+
+---
+
 # Conclusion
 
 * Adversarial Trainingによるロバストネス向上を，損失関数の曲率の変化の観点から解釈
