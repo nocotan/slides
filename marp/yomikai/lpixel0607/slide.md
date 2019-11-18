@@ -43,12 +43,12 @@ Twitterやってます
 
 ### <span style="color: CornflowerBlue">Researches ater joining Ridge-i</span>
 
-* <font size="4">Interpretation of Feature Space using Multi-Channel Attentional Sub-Networks (<span style="color: CornflowerBlue">CVPRW2019</span>)</font>
+* <font size="4">Interpretation of Feature Space using Multi-Channel Attentional Sub-Networks (<span style="color: CornflowerBlue"><strong>CVPRW2019</strong></span>)</font>
 * <font size="4">Intentional Attention Mask Transformation for Robust CNN Classification (MIRU2019)</font>
 * <font size="4">PNUNet: Anomaly Detection using Positive-and-Negative Noise based on Self-Training Procedure (MIRU2019)</font>
 * <font size="4">Progressive Data Increasing as the Neural Network Initializer (JSAI2019)</font>
-* <font size="4">Anomaly Detection Using GANs for Visual Inspection in Noisy Training Data (<span style="color: CornflowerBlue">ACCVW2018</span>)</font>
-* <font size="4">Analyzing Centralities of Embedded Nodes (<span style="color: CornflowerBlue">ICDMW2018</span>)</font>
+* <font size="4">Anomaly Detection Using GANs for Visual Inspection in Noisy Training Data (<span style="color: CornflowerBlue"><strong>ACCVW2018</strong></span>)</font>
+* <font size="4">Analyzing Centralities of Embedded Nodes (<span style="color: CornflowerBlue"><strong>ICDMW2018</strong></span>)</font>
 
 ---
 
